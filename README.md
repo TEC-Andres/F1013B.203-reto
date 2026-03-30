@@ -1,8 +1,12 @@
 # Modelación computacional de sistemas eléctricos | Aplicación de campos eléctricos al diagnóstico de malaria: dielectroforesis:
 Daniel Eduardo Santiago Gutierrez — A00844476
+
 David Eduardo Santiago Gutiérrez — A00844480
+
 Juan Carlos Livas Reyes — A01199652
+
 Andrés Rodríguez Cantú — A01287002
+
 Alejandro Salinas Salas — A01287454
 
 ## Objetivo del proyecto:
