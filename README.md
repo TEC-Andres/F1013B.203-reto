@@ -1,7 +1,10 @@
 # Modelación computacional de sistemas eléctricos | Reto de solido de vrevolución
 ## Miembros del equipo:
-- Andrés Rodríguez Cantú
-- Alejandro Salinas Salas
+Daniel Eduardo Santiago Gutierrez — A00844476
+David Eduardo Santiago Gutiérrez — A00844480
+Juan Carlos Livas Reyes — A01199652
+Andrés Rodríguez Cantú — A01287002
+Alejandro Salinas Salas — A01287454
 
 ## Objetivo del proyecto:
 Modelar e imprimir un prototipo un producto inovador utilizando sólidos de revolución utilizando tecnologías como MATLAB, Geogebra y la impresión 3D.
