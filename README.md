@@ -1,5 +1,4 @@
-# Modelación computacional de sistemas eléctricos | Reto de solido de vrevolución
-## Miembros del equipo:
+# Modelación computacional de sistemas eléctricos | Aplicación de campos eléctricos al diagnóstico de malaria: dielectroforesis:
 Daniel Eduardo Santiago Gutierrez — A00844476
 David Eduardo Santiago Gutiérrez — A00844480
 Juan Carlos Livas Reyes — A01199652
@@ -7,7 +6,7 @@ Andrés Rodríguez Cantú — A01287002
 Alejandro Salinas Salas — A01287454
 
 ## Objetivo del proyecto:
-Modelar e imprimir un prototipo un producto inovador utilizando sólidos de revolución utilizando tecnologías como MATLAB, Geogebra y la impresión 3D.
+Utilizar modelación computacional de campos electricos para mover partículas de malaria en un fluido, con el fin de diagnosticar la enfermedad de manera rápida y eficiente.
 
 ## Estructura y nomenclatura de archivos:
 La estructura de archivos esta organizada de la siguiente manera:
@@ -32,7 +31,7 @@ C:.
 
 ## Liga de descarga del proyecto:
 Última versión del proyecto:
-[Release de Semana I](https://github.com/TEC-Andres/TC1003B.104-reto/releases/tag/Avance)
+[Release de Semana I](https://github.com/TEC-Andres/F1013B.203-reto/releases/tag/Avance)
 
 ## Requerimientos para compilar
 - [Python](https://www.python.org/downloads/) 3.8 o superior
