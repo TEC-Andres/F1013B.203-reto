@@ -1,4 +1,4 @@
-# Modelación computacional de sistemas eléctricos | Aplicación de campos eléctricos al diagnóstico de malaria: dielectroforesis:
+# Modelación computacional de sistemas eléctricos | Aplicación de campos eléctricos al diagnóstico de malaria: dielectroforesis
 Daniel Eduardo Santiago Gutierrez — A00844476
 
 David Eduardo Santiago Gutiérrez — A00844480
