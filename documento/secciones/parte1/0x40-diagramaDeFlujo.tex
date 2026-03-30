@@ -1,0 +1,61 @@
+\inicializarSeccion{Diagrama de flujo}
+\tab El código de MATLAB sigue la siguiente lógica de ejecución, que se muestra en el siguiente diagrama de flujo (Nota: el diagrama muestra todo en unidades de SI. Las cargas están en Coulombs, las distancias en metros y el campo eléctrico en Newtons por Coulomb):
+
+\begin{center}
+\begin{tikzpicture}[node distance=2cm]
+
+    % Start node at the top
+    \node (inicio) [initEnd] {Inicio};
+
+    % Inputs
+    \node (d) [io, below left=1.5cm and 0.5cm of inicio] {$d$ dist. de cargas};
+    \node (q) [io, left=1cm of d] {$q$ carga del punto};
+    \node (N) [io, below right=1.5cm and 0.5cm of inicio] {$N$ puntos de malla};
+    \node (Lim) [io, right=1cm of N] {$Lim$ esp. simulado};
+
+    % Process 1
+    \node (determinacionDePosicion) [process, below=3.5cm of inicio] {Determinación de posiciones de ambas cargas};
+
+    % Decision (Fixed underscores to math mode)
+    \node (handlerEntreCero) [decision, below=1cm of determinacionDePosicion, aspect=2] {¿$r_{pos}$ o $r_{neg} < 10^{-10}$?};
+
+    % Decision Branches
+    \node (handlerEntreCeroSi) [process, below left=1cm and 0.5cm of handlerEntreCero] {Asignar $r_{pos}$ o $r_{neg}$ a $10^{-10}$};
+    \node (handlerEntreCeroNo) [process, below right=1cm and 0.5cm of handlerEntreCero] {Continuar con $r_{pos}$ y $r_{neg}$};
+
+    % Calculation
+    \node (campoCadaCargaPositiva) [process, below=2.0cm of handlerEntreCero, minimum width=8cm, text width=8cm] {Cálculo del campo eléctrico:\\$E_{x\text{-pos/neg}} = \frac{k(\pm q)(x-x_{\text{pos/neg}})}{r_{\text{pos/neg}}^3}$, $E_y= \frac{k(\pm q)y}{r_{\text{pos/neg}}^3}$};
+
+    \node (campoTotal) [process, below=0.5cm of campoCadaCargaPositiva, minimum width=8cm, text width=8cm] {Cálculo del campo eléctrico total:\\$E_x = E_{x\text{-pos}} + E_{x\text{-neg}}$, $E_y = E_{y\text{-pos}} + E_{y\text{-neg}}$};
+
+    \node (longitud) [process, below=0.5cm of campoTotal, minimum width=8cm, text width=8cm] {Longitud del campo eléctrico para visualización:\\$E_{\text{mag}}=\sqrt{E_x^2 + E_y^2}$\\ $E_{x\text{-mag}}=\frac{E_x}{E_{\text{mag}}}$, $E_{y\text{-mag}}=\frac{E_y}{E_{\text{mag}}}$};
+
+    \node (grafica) [process, below=0.5cm of longitud, minimum width=8cm, text width=8cm] {Graficar el campo eléctrico utilizando quiver};
+
+    \node (fin) [initEnd, below=0.5cm of grafica] {Fin};
+
+    % Drawing Arrows
+    \draw [arrow] (inicio) -- (q.north);
+    \draw [arrow] (inicio) -- (d.north);
+    \draw [arrow] (inicio) -- (N.north);
+    \draw [arrow] (inicio) -- (Lim.north);
+
+    \draw [arrow] (q.south) -- (determinacionDePosicion);
+    \draw [arrow] (d.south) -- (determinacionDePosicion);
+    \draw [arrow] (N.south) -- (determinacionDePosicion);
+    \draw [arrow] (Lim.south) -- (determinacionDePosicion);
+
+    \draw [arrow] (determinacionDePosicion) -- (handlerEntreCero);
+    \draw [arrow] (handlerEntreCero) -- node[anchor=east, xshift=-0.2cm] {Sí} (handlerEntreCeroSi);
+    \draw [arrow] (handlerEntreCero) -- node[anchor=west, xshift=0.2cm] {No} (handlerEntreCeroNo);
+    
+    \draw [arrow] (handlerEntreCeroSi.south) -- ++(0,-0.5) -| ([xshift=-3.45cm]campoCadaCargaPositiva.north);
+    \draw [arrow] (handlerEntreCeroNo.south) -- ++(0,-0.5) -| ([xshift=3.45cm]campoCadaCargaPositiva.north);
+
+    \draw [arrow] (campoCadaCargaPositiva) -- (campoTotal);
+    \draw [arrow] (campoTotal) -- (longitud);
+
+    \draw [arrow] (longitud) -- (grafica);
+    \draw [arrow] (grafica) -- (fin);
+\end{tikzpicture}
+\end{center}

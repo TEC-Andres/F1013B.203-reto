@@ -1,0 +1,11 @@
+__logs__/
+__texcache__/
+__versionesFinales__/
+output/
+_resultadosFinales/
+__pycache__/
+__deprecated__/
+_notes/
+*.asv
+documento/svg-inkscape/
+*.aux

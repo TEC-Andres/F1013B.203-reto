@@ -1,0 +1,6 @@
+\inicializarSubseccion{Crónica del proceso}
+Al comenzar, lo primero que tuvimos que resolver fue cómo representar el espacio en MATLAB. Intentamos hacerlo con ciclos for pero era lento e impráctico, así que utilizamos \verb|meshgrid| el cual genera toda la cuadrícula de puntos de una sola vez y logró simplificar bastante el código.
+
+Un problema que no anticipamos fue la división entre cero justo donde están las cargas, la distancia $r$ vale cero y MATLAB devuelve infinito. Lo resolvimos reemplazando esas distancias con un valor muy pequeño $(1\times10^{-10})$ que no afecta los resultados pero elimina el error.
+
+Por último, al graficar con \verb|quiver| sin normalizar, los vectores cerca de las cargas eran tan grandes que tapaban todo lo demás. Normalizar los vectores fue la solución: la figura dejó de mostrar magnitudes y mostrar únicamente la dirección del campo, que era exactamente lo que necesitamos.  

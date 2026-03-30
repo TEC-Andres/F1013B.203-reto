@@ -1,0 +1,52 @@
+\documentclass{article}
+\input{librerias/lib}
+\input{librerias/comandos}
+\input{librerias/diagramasDeFlujoDefs}
+\setlength{\parindent}{4em}
+\addbibresource{references.bib}
+
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\vspace{3cm}
+\input{secciones/documento/portada}
+\newpage
+\input{secciones/documento/indice}
+\newpage
+\input{secciones/documento/roles}
+\newpage
+
+
+% PARTE 1
+\phantomsection
+\addcontentsline{toc}{section}{Parte 1}
+\input{secciones/parte1/0x00-introduccion}
+\newpage
+
+\input{secciones/parte1/0x10-problematica}
+\newpage
+
+\input{secciones/parte1/0x20-dielectroforesis}
+\newpage
+
+\input{secciones/parte1/0x30-MATLAB}
+\input{secciones/parte1/0x31-descripcion}
+\input{secciones/parte1/0x32-proceso}
+\input{secciones/parte1/0x33-variables}
+\input{secciones/parte1/0x34-formulas}
+\input{secciones/parte1/0x35-funcionesMATLAB}
+\input{secciones/parte1/0x36-simulaciones}
+\newpage
+
+\input{secciones/parte1/0x40-diagramaDeFlujo}
+\newpage
+
+\input{secciones/parte1/0x50-diagramaDeGantt}
+% Referencias 
+\phantomsection
+\addcontentsline{toc}{section}{Referencias}
+\newpage
+\printbibliography
+
+\end{document}

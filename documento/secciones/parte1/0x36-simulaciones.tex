@@ -1,0 +1,46 @@
+\inicializarSubseccion{Simulaciones y resultados}
+
+\tab En esta sección, se mostrará los resultados obtenidos a partir de la simulación del campo eléctrico generado por un dipolo eléctrico utilizando MATLAB. En esta simulación, se mostrarán las dos cargas electrícas de igual magnitud pero signo opuesto, separadas por una distancia $d$. Se representará el campo eléctrico con flechas que indican la dirección y magnitud del campo en cada punto del espacio.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includesvg[width=1\textwidth, inkscapelatex=false]{\nat{parte1/simulacionDelta05cm.svg}}
+        \caption{Simulación del campo eléctrico generado por un dipolo con separación de $d=0.05$ m.}
+        \label{fig:simulacionDelta05cm}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includesvg[width=1\textwidth, inkscapelatex=false]{\nat{parte1/simulacionDelta10cm.svg}}
+        \caption{Simulación del campo eléctrico generado por un dipolo con separación de $d=0.10$ m.}
+        \label{fig:simulacionDelta10cm}
+    \end{minipage}
+
+    \vspace{0.5cm}
+
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includesvg[width=1\textwidth, inkscapelatex=false]{\nat{parte1/simulacionDelta20cm.svg}}
+        \caption{Simulación del campo eléctrico generado por un dipolo con separación de $d=0.20$ m.}
+        \label{fig:simulacionDelta20cm}
+    \end{minipage}
+\end{figure}
+
+\tab Como hemos podido observar en las figuras \ref{fig:simulacionDelta05cm}, \ref{fig:simulacionDelta10cm} y \ref{fig:simulacionDelta20cm}, el campo eléctrico generado por el dipolo varía significativamente con la distancia entre las cargas. A medida que las cargas se alejan, el campo eléctrico se vuelve más débil. Esto debido a la ley de Coloumb, que nos dice que la magnitud del campo eléctrico generado de una carga disminuye con el cuadrado de su distancia.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includesvg[width=1\textwidth, inkscapelatex=false]{\nat{parte1/simulacionDelta00cm.svg}}
+        \caption{Simulación de ambas cargas en el mismo punto. Ambas se anulan, generando un campo eléctrico nulo.}
+        \label{fig:simulacionDelta00cm}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includesvg[width=1\textwidth, inkscapelatex=false]{\nat{parte1/simulacionDelta01cm.svg}}
+        \caption{Simulación de campo eléctrico en $d=0.01$ m. Se puede ver que el campo eléctrico es muy fuerte cerca de las cargas.}
+        \label{fig:simulacionDelta01cm}
+    \end{minipage}
+\end{figure}
