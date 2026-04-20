@@ -1,0 +1,117 @@
+\inicializarSeccion{Explicación del código del campo de dos cargas puntuales}
+
+\tab Para poder entender mejor el código, debemos entender la lógica detras de cada linea de código. Para esto, y en correspondencia de la figura \ref{fig:diagramaFlujo}, explicaremos la motivación y la función de cada bloque del código, siguiendo el orden de ejecución del programa.
+
+\tab En esta parte del código se inicializan las variables del código del sistema y se definió la malla de la simulación. Se establecieron parámetros como la carga eléctrica $q$, separación de cargas $d$, número de puntos $N$ y el tamaño del dominio $Lim$.
+
+\tab Se definió la constante de Coulomb $k$, y se construyó una malla bidimensional mediante el linspace y el meshgrid, el cual nos permite evaluar el campo eléctrico de cada punto.
+
+\begin{lstlisting}[style=Matlab-editor]
+clf; clear; clc;
+
+%% Parametros que puedes cambiar
+q = 1e-9;        % Carga electrica [C]
+d = 0;        % Separacion entre cargas [m]
+N = 30;          % Puntos en la malla
+Lim = 0.15;      % Tamaño del espacio simulado [m]
+
+%% Constante de Coulomb
+k = 8.99e9;
+
+%% Creamos la malla de puntos en 2D
+x = linspace(-Lim, Lim, N);
+y = linspace(-Lim, Lim, N);
+[X, Y] = meshgrid(x, y);
+\end{lstlisting}
+
+\tab A partir de estas lineas, nosotros  indicamos la pocisión de las cargas; la carga positiva se encuentra en $x=\frac{d}{2}$, y la negativa en $x=-\frac{d}{2}$, ambas sobre el eje horizontal. La variable d controla la separación entre estas dos, al modificar el valor se altera la distancia entre la carga positiva y la negativa, cambiando la configuración espacial del sistema.
+
+\begin{lstlisting}[style=Matlab-editor]
+x_pos =  d/2;    % Carga +q
+x_neg = -d/2;    % Carga -q
+%% Posicion de cada carga
+x_pos =  d/2;    % Carga +q
+x_neg = -d/2;    % Carga -q
+x_pos =  d/2;    % Carga +q
+x_neg = -d/2;    % Carga -q
+\end{lstlisting}
+
+\tab La variable \verb|r_pos| representa la distancia entre cada punto del plano y la carga positiva, mientras que \verb|r_neg| es la distancia hacia la carga negativa. Estas distancias se calcularon utilizando la fórmula de distancia euclidiana en dos dimensiones, la medición de este cálculo es importante, el campo eléctrico de una carga puntual depende de la distancia entre la carga y el punto donde se evalúa.
+
+\begin{lstlisting}[style=Matlab-editor]
+r_pos(r_pos < 1e-10) = 1e-10;
+r_neg(r_neg < 1e-10) = 1e-10;
+%% Evitamos division entre cero en la posicion de las cargas
+r_pos(r_pos < 1e-10) = 1e-10;
+r_neg(r_neg < 1e-10) = 1e-10;
+r_pos(r_pos < 1e-10) = 1e-10;
+r_neg(r_neg < 1e-10) = 1e-10;
+\end{lstlisting}
+
+\tab Las variables \verb|Ex_pos| y \verb|Ey_pos| son los componentes del campo eléctrico generado por una carga positiva. Las ecuaciones consideran la constante de Coulomb $k$ y la magnitud de la carga $q$. \verb|Ex_neg| y \verb|Ey_neg| representa las componentes del campo eléctrico generado por la carga negativa, por lo cual se utiliza en este caso el valor de $-q$, el cual nos indica la dirección del campo es puesta por la carga positiva. En ambas el campo eléctrico se calcula en forma vectorial, separando los ejes de x y y, además de utilizar el término de $r^2$ en el denominador refleja la dependencia del campo eléctrico con la distancia.
+
+\begin{lstlisting}[style=Matlab-editor]
+%% Campo electrico de cada carga
+Ex_pos = k * q * (X - x_pos) ./ r_pos.^3;
+Ey_pos = k * q * Y ./ r_pos.^3;
+
+Ex_neg = k * (-q) * (X - x_neg) ./ r_neg.^3;
+Ey_neg = k * (-q) * Y ./ r_neg.^3;
+\end{lstlisting}
+
+\tab Las variable \verb|Ex| representa el componente horizontal y la \verb|Ey| es la componente vertical. En ambas se obtienen sumando las contribuciones que corresponden a cada carga. Estas expresiones indican que el campo eléctrico resultante en cada punto del espacio es la suma vectorial de los campos generados por la carga positiva y la negativa.
+\begin{lstlisting}[style=Matlab-editor]
+%% Campo total (superposicion)
+Ex = Ex_pos + Ex_neg;
+Ey = Ey_pos + Ey_neg;
+\end{lstlisting}
+
+\tab La expresión obtiene el tamaño del vector de campo eléctrico a partir de sus componentes en $x$ y $y$, se utiliza para normalizar los vectores y así poder
+visualizar únicamente la dirección del campo de la gráfica.
+
+\begin{lstlisting}[style=Matlab-editor]
+%% Normalizamos para que todas las flechas tengan el mismo tamaño
+E_mag = sqrt(Ex.^2 + Ey.^2);
+% E_mag(E_mag == 0) = 1;
+Ex_norm = Ex ./ E_mag;
+Ey_norm = Ey ./ E_mag;
+\end{lstlisting}
+
+\tab La función quiver nos ayuda a representar el campo eléctrico mediante vectores en cada punto de la malla,mostrando la dirección de estas. Y con el hold on nos permite añadir elementos adicionales a la gráfica.
+
+\begin{lstlisting}[style=Matlab-editor]
+%% Graficamos el campo electrico
+figure;
+quiver(X, Y, Ex_norm, Ey_norm, 0.5, 'b', 'LineWidth', 1.2);
+hold on;
+\end{lstlisting}
+
+\tab La carga positiva se representa visualmente con un punto rojo y la negativa con uno azul,también se agregan las etiquetas de $+q$ y $-q$, las cuales nos ayudan a identificar cada carga en la visualización.
+
+\begin{lstlisting}[style=Matlab-editor]
+%% Marcamos la posicion de las cargas
+plot(x_pos, 0, 'ro', 'MarkerSize', 12, 'MarkerFaceColor', 'r');
+plot(x_neg, 0, 'bo', 'MarkerSize', 12, 'MarkerFaceColor', 'b');
+text(x_pos + 0.005, 0.012, '+q', 'FontSize', 12, 'Color', 'r', 'FontWeight', 'bold');
+text(x_neg + 0.005, 0.012, '-q', 'FontSize', 12, 'Color', 'b', 'FontWeight', 'bold');
+\end{lstlisting}
+
+\tab Se añade un título a cada uno de los parámetros del sistema, estos se etiquetan con los ejes y se ajustan a la escala para mantener proporciones correctas, también se incluye una cuadrícula y una leyenda para identificar los elementos de la gráfica.
+
+\begin{lstlisting}[style=Matlab-editor]
+%% Formato de la figura
+title(sprintf('Campo electrico del dipolo  |  q = %.1e C,  d = %.3f m', q, d), 'FontSize', 13);
+xlabel('x [m]', 'FontSize', 12);
+ylabel('y [m]', 'FontSize', 12);
+axis equal;
+axis([-Lim Lim -Lim Lim]);
+grid on;
+legend('Campo eléctrico', 'Carga +q', 'Carga -q', 'Location', 'northeast');
+hold off;
+\end{lstlisting}
+
+\tab Por último, esta línea nos permite exportar la figura en un formato SVG, conservando la alta calidad para su uso dentro del entregable.
+\begin{lstlisting}[style=Matlab-editor]
+%% Guardar con SVG
+saveas(gcf, 'SimulationResult.svg');
+\end{lstlisting}

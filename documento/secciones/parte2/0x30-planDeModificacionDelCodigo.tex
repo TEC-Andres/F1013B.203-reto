@@ -1,0 +1,6 @@
+\inicializarSeccion{Plan de modificación del código}
+
+\tab A partir de lo establecido en las secciones anteriores, la transición del código del primer avance al segundo consiste esencialmente en reemplazar el cálculo del campo de dos cargas puntuales individuales por la suma acumulada del campo generado por cada una de las $N_p$ cargas positivas y $N_n$ cargas negativas distribuidas a lo largo de sus respectivas líneas
+horizontales.
+
+\tab En el primer avance, el campo eléctrico total se obtenía calculando la contribución de una sola carga positiva ubicada en $x =\frac{d}{2}$y una sola carga negativa en $x =-\frac{d}{2}$, y sumando ambas contribuciones. El nuevo código extiende esta lógica usando ciclos for: por cada carga positiva $i$ y cada carga negativa $j$, se calcula su contribución individual al campo eléctrico y se acumula en una variable que representa el campo total. En este caso, la línea de cargas positivas se ubica en $y = \frac{h}{2}$ y la línea de cargas negativas en $y = -\frac{h}{2}$, ambas paralelas al eje $x$. Cada carga varía su posición a lo largo de $x$ mientras mantiene fijo su valor en $y$. La posición de cada carga fue definida en la sección anterior mediante las fórmulas de parametrización. Este es el código modificado con las nuevas regulaciones:
