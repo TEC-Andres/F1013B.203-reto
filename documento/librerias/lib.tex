@@ -11,6 +11,7 @@
 \usepackage{parskip}
 \usepackage{xstring}
 \usepackage{graphicx}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{soul}
 \usepackage{color}
@@ -18,6 +19,14 @@
 \usetikzlibrary{shapes.geometric, arrows, positioning}
 
 % Liberías para código de MATLAB
+% Ensure listings handles UTF-8 input correctly (fixes listings + utf8 issues)
+\usepackage{listingsutf8}
+% Configure listings to read UTF-8 and map common Spanish accented letters
+\lstset{
+	inputencoding=utf8,
+	extendedchars=true,
+	literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {Ü}{{\"U}}1
+}
 \usepackage[numbered,framed]{matlab-prettifier}
 
 % Liberiras para bibliografía

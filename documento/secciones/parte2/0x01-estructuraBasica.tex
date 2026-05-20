@@ -1,0 +1,40 @@
+\inicializarSubseccion{Estructura b\'asica del c\'odigo}
+
+\tab El ciclo for se usa cuando se conoce cuantas veces se repetirá un proceso, en Matlab tiene la estructura:
+\begin{lstlisting}[style=Matlab-editor]
+for variable = inicio:incremento:fin
+    instrucciones
+end
+\end{lstlisting}
+
+\tab Las partes de este son la variable, la cual lleva el conteo de iteraciones (usualmente $i$, $j$), el inicio tiene el valor inicial de la variable, el incremento indica cuanto aumento hay por iteración, normalmente de uno, el fin es el valor límite y el bloque de instrucciones es lo que se ejecutará en cada repetición.
+
+Un ejemplo del ciclo for sería:
+\begin{lstlisting}[style=Matlab-editor]
+for i = 1:10
+    disp(i)
+end
+\end{lstlisting}
+
+\tab Por el otro lado, el ciclio while se usa cuando no se sabe con exactitud cuantas veces se va a repetir el proceso, por lo cual depende de una condición
+
+Este ciclo tiene la estructura general:
+
+\begin{lstlisting}[style=Matlab-editor]
+while condición
+    instrucciones
+end
+\end{lstlisting}
+
+\tab Las partes de este son la condición que se evaluará antes de cada iteración y el bloque de instrucciones que se ejecuta mientras esta condición sea verdadera
+
+Un ejemplo de este ciclo sería:
+
+\begin{lstlisting}[style=Matlab-editor]
+i = 1;
+    while i <= 10
+    disp(i)
+    i = i + 1;
+end
+\end{lstlisting}
+

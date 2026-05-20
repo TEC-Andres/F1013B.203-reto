@@ -1,0 +1,48 @@
+\inicializarSeccion{Funcionamiento de App Designer y como acceder a el}
+\tab App Designer es una herramienta de MATLAB que permite a los usuarios crear aplicaciones gráficas de manera sencilla e intuitiva. 
+\inicializarSubseccion{Como acceder a App Designer}
+Para acceder a App Designer, puedes seguir estos pasos:
+1. Abre MATLAB en tu computadora.
+2. En la barra de herramientas superior, haz clic en la pestaña "Apps".
+3. Selecciona "Design App" y entra al portal de App Designer.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{\nat{parte3/designApp1.png}}
+        \caption{Barra de herramientas de MATLAB con la pestaña 'Apps' resaltada.}
+        \label{fig:designApp}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{\nat{parte3/designApp2.png}}
+        \caption{Logo de App Designer.}
+        \label{fig:designApp2}
+    \end{minipage}
+\end{figure}
+
+\inicializarSubseccion{Ventanas de App Designer}
+\tab App designer tiene dos ventanas, la del diseño, en donde puedes agregar los componentes de tu aplicación (sliders, botones, gráficos, etc.) y la ventana de código, en donde puedes programar el comportamiento de cada componente que agregaste en la ventana de diseño. La ventaja de esto, es que puedes programar cada componente de manera independiente; tratandolo como un objeto, haciendo que el código sea mas organizado y fácil de entender. Aparte, desde antes puedes ver como se va a ver tu aplicación, lo que hace que el proceso de diseño sea mas sencillo.
+
+\tab Demonstrando un poco el poder de esta tecnología, tomaremos el ejemplo de un botón. Este componente funciona como un objeto, la cuál nos permite acceder a sus propiedades de manera directa en el editor de componentes. Por ejemplo, si quisieramos renombrar el botón, solo tendríamos que acceder desde el editor de componentes y cambiar la propiedad de "Text". En la cuestión de código, podemos agregarle a este botón un callback, lo cuál nos permite hacer una acción con este botón en donde podemos realizar acciones. A continuación, se muestra un ejemplo de un callback en donde actualiza el plot de la aplicación cada vez que se presiona el botón.
+
+\begin{lstlisting}[style=Matlab-editor]
+% Button pushed function: CorrerSimulacinButton
+function CorrerSimulacinButtonPushed(app, event)
+    app.updatePlot();
+end
+\end{lstlisting}
+
+\tab Entrando tambien en detalles de funciones, cada función esta dentro de una clase; siendo la clase predeterminada la clase de la aplicación. Esto hace que para acceder a ciertas propiedades de la aplicación, tenemos que usar los principios de la programación orientada a objetos. Como se vio en el ejemplo del botón, para acceder a la función de actualizar el plot, tenemos que usar la sintaxis de \texttt{\textbar app.updatePlot()\textbar}. Esto hace que el código sea mas organizado y fácil de entender, ya que cada función esta claramente definida dentro de su clase correspondiente.
+
+\tab Ya con esto, si queremos concretar el funcionamiento, lo único que tendriamos que hacer es colocar la figura en nuestra aplicación. Esto se hace escogiendo el componente \texttt{\textbar axes\textbar} y acomodando el componente. De esta manera, podremos tener nuestro plot dentro de la aplicación, y de esta forma, poder mostrar lo que nosotros queramos mostrar en el plot. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{\nat{parte3/appDesignerImagen.png}}
+    \caption{Imagen de la ventana de App Designer con el componente axes agregado.}
+    \label{fig:axes}
+\end{figure}
+
+\tab Si algo no quedo claro, o si quieres aprender un poco mas de App Designer, puedes ver el siguiente video tutorial que explica de manera mas detallada el funcionamiento de esta herramienta: \url{https://tecmx-my.sharepoint.com/:v:/g/personal/a01287454_tec_mx/IQDGEAMB3TIsQbN1cuBgsSdXAf5fGoUb5W1vCpuZUI7ufTs?e=zYZwpt}.

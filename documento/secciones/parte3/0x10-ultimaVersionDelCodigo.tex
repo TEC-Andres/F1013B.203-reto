@@ -1,0 +1,254 @@
+\inicializarSeccion{Última versión del código}
+\tab El cambio mas grande sin duda fue la migración de MATLAB vanilla a MATLAB AppDesigner, esto con el fin de poder crear una interfaz grafica que permita al usuario configurar los parametros del sistema y correr la simulación de una manera mas amigable. Para la última versión del código, se realizarón modificaciones importantes para poder integrar la celula en la simulación del campo electrico. Primero que nada, se hizo la simulación dinamica en lugar de estatica, esto para poder ver la trayectoria de la celula a traves del campo electrico. Para realizar esta funcionalidad, utilizamos ciertas palabras clave como \texttt{\textbar drawnow\textbar} y \texttt{\textbar hTooltip\textbar}. Ademas de usar loops para actualizar la posición de la célula; mostrando de esta manera el movimiento de la célula a través del campo eléctrico.
+
+\tab A continuación se muestra el código de la última versión. Como App Designer es una herramienta que agrega código de la visualización de componentes. Para evitar mostrar código innecesario, solo se mostrara el código que corresponde a la simulación y la inicialización de la simulación. Sin embargo, si quieres ver el código completo, puedes acceder al repositorio de GitHub del curso y revisar el archivo \texttt{appDesigner.m}, el cual contiene el código completo de la aplicación.
+
+\begin{lstlisting}[style=Matlab-editor]
+properties (Access = private)
+    % Variables cambiables en appDesigner
+    Np
+    Nn
+    d
+    Lp
+    Ln
+    cell_pos % [x, y]
+    cell_infected % bool
+    
+    % Para meshgrid y cálculos de simulación
+    x
+    y
+    X_grid
+    Y_grid
+    Ex_interp
+    Ey_interp
+    
+    % Handles gráficos
+    hQuiver
+    hTooltip
+    hPos
+    hNeg
+    hCell 
+end
+
+methods (Access = private)
+    
+    function updatePlot(app)
+        %% Parámetros fijos internos
+        q   = 1e-9;    % Carga eléctrica de cada punto [C]
+        N   = 30;      % Puntos en la malla
+        Lim = 0.30;    % Tamaño del espacio simulado [m]
+        k = 8.99e9;    % Constante de Coulomb
+
+        %% Cálculo del Delta constante
+        % Determinamos cuál lado tiene más cargas para definir el espaciado (dx)
+        dx_p = (app.Np > 1) * (app.Lp / (app.Np - 1));
+        dx_n = (app.Nn > 1) * (app.Ln / (app.Nn - 1));
+        
+        %% Posición de cada carga positiva (y = d/2)
+        y_pos = app.d/2;
+        x_pos = -(app.Lp/2) + (0:app.Np-1) * dx_p;
+        
+        %% Posición de cada carga negativa (y = -d/2)
+        y_neg = -app.d/2;
+        x_neg = -(app.Ln/2) + (0:app.Nn-1) * dx_n;
+        
+        %% Creamos la malla de puntos en 2D
+        app.x = linspace(-Lim, Lim, N);
+        app.y = linspace(-Lim, Lim, N);
+        [app.X_grid, app.Y_grid] = meshgrid(app.x, app.y);
+
+        %% Campo total inicializado en cero
+        Ex = zeros(size(app.X_grid));
+        Ey = zeros(size(app.X_grid));
+
+        %% Sumamos el campo eléctrico de cada carga positiva
+        for i = 1:app.Np
+            r_pos = sqrt((app.X_grid - x_pos(i)).^2 + (app.Y_grid - y_pos).^2);
+            r_pos(r_pos < 1e-10) = 1e-10; % Evitar división por cero
+            Ex = Ex + k * q * (app.X_grid - x_pos(i)) ./ r_pos.^3;
+            Ey = Ey + k * q * (app.Y_grid - y_pos) ./ r_pos.^3;
+        end
+
+        %% Sumamos el campo eléctrico de cada carga negativa
+        for j = 1:app.Nn
+            r_neg = sqrt((app.X_grid - x_neg(j)).^2 + (app.Y_grid - y_neg).^2);
+            r_neg(r_neg < 1e-10) = 1e-10;
+            Ex = Ex + k * (-q) * (app.X_grid - x_neg(j)) ./ r_neg.^3;
+            Ey = Ey + k * (-q) * (app.Y_grid - y_neg) ./ r_neg.^3;
+        end
+
+        %% Normalización para visualización
+        E_mag = sqrt(Ex.^2 + Ey.^2);
+        E_mag(E_mag == 0) = 1;
+        Ex_norm = Ex ./ E_mag;
+        Ey_norm = Ey ./ E_mag;
+
+        %% Pre-cálculo: convertir campo en funciones interpoladas para muestreo
+        app.Ex_interp = griddedInterpolant(app.X_grid', app.Y_grid', Ex', 'linear', 'nearest');
+        app.Ey_interp = griddedInterpolant(app.X_grid', app.Y_grid', Ey', 'linear', 'nearest');
+
+        %% Configuración visual de la célula
+        if app.cell_infected
+            markerColor = [0.5 0 0.5];   % morado si esta infectada
+        else
+            markerColor = [0 1 0];       % verde si no esta infectado
+        end
+
+        %% Graficamos el campo eléctrico inicial
+        % Usamos cla para borrar elementos anteriores si cambió Np o Nn
+        cla(app.UIAxes);
+        hold(app.UIAxes, 'on');
+
+        app.hQuiver = quiver(app.UIAxes, app.X_grid, app.Y_grid, Ex_norm, Ey_norm, 0.5, 'b', 'LineWidth', 1.2);
+
+        % Dibujar cargas positivas (si hay)
+        if app.Np > 0
+            app.hPos = plot(app.UIAxes, x_pos, repmat(y_pos, 1, app.Np), 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+        end
+        
+        % Dibujar cargas negativas (si hay)
+        if app.Nn > 0
+            app.hNeg = plot(app.UIAxes, x_neg, repmat(y_neg, 1, app.Nn), 'bo', 'MarkerSize', 8, 'MarkerFaceColor', 'b');
+        end
+
+        % Graficar la célula (handle para actualización)
+        app.hCell = plot(app.UIAxes, app.cell_pos(1), app.cell_pos(2), 's', 'MarkerSize', 12, ...
+                'MarkerFaceColor', markerColor, 'MarkerEdgeColor', 'k', 'LineWidth', 1.2);
+
+        % Etiquetas
+        title(app.UIAxes, sprintf('Campo eléctrico dinámico | Np = %d, Nn = %d, d = %.2f m', app.Np, app.Nn, app.d), 'FontSize', 13);
+        xlabel(app.UIAxes, 'x [m]'); 
+        ylabel(app.UIAxes, 'y [m]');
+        
+        % Asegurar límites constantes
+        axis(app.UIAxes, 'equal'); 
+        axis(app.UIAxes, [-Lim Lim -Lim Lim]);
+        grid(app.UIAxes, 'on');
+        
+        hold(app.UIAxes, 'off');
+
+        grid(app.UIAxes, 'on');
+        
+        % --- AÑADIR CÓDIGO DEL TOOLTIP AQUÍ ---
+        % Borrar el tooltip anterior si existe para evitar duplicados
+        if isprop(app, 'hTooltip')
+            delete(app.hTooltip);
+        end
+        
+        % Crear un objeto de texto flotante oculto por defecto
+        app.hTooltip = text(app.UIAxes, 0, 0, '', ...
+            'BackgroundColor', [0.15 0.15 0.15], ... % Fondo gris oscuro
+            'Color', 'white', ...                    % Texto blanco
+            'EdgeColor', [0.5 0.5 0.5], ...          % Borde gris
+            'FontSize', 10, ...
+            'Margin', 4, ...
+            'FontName', 'Consolas', ...              % Fuente monoespaciada para alinear números
+            'Visible', 'off', ...
+            'PickableParts', 'none');                % Evita que interfiera con los clics
+        % --------------------------------------
+
+        hold(app.UIAxes, 'off');
+    end
+    
+    function UIFigureWindowMouseMotion(app)
+        cp = app.UIAxes.CurrentPoint;
+        x_mouse = cp(1, 1);
+        y_mouse = cp(1, 2);
+        
+        % Obtener los límites actuales del gráfico
+        x_lim = app.UIAxes.XLim;
+        y_lim = app.UIAxes.YLim;
+        
+        % Comprobar si el ratón está dentro del gráfico (UIAxes)
+        if x_mouse >= x_lim(1) && x_mouse <= x_lim(2) && ...
+            y_mouse >= y_lim(1) && y_mouse <= y_lim(2)
+            
+            % Asegurarnos de que el campo ya está calculado
+            if ~isempty(app.Ex_interp) && ~isempty(app.Ey_interp)
+                
+                % Calcular campo eléctrico en la posición del ratón
+                Ex_val = app.Ex_interp(x_mouse, y_mouse);
+                Ey_val = app.Ey_interp(x_mouse, y_mouse);
+                
+                % Formatear el texto (similar a tu imagen de referencia)
+                hoverText = {sprintf('[X,Y] [%.6f  %.6f]', x_mouse, y_mouse), ...
+                                sprintf('[U,V] [%.6e  %.6e]', Ex_val, Ey_val)};
+                            
+                % Actualizar la posición del texto (ligeramente desplazado para que el cursor no lo tape)
+                offset = (x_lim(2) - x_lim(1)) * 0.02;
+                
+                if isvalid(app.hTooltip)
+                    app.hTooltip.Position = [x_mouse + offset, y_mouse + offset, 0];
+                    app.hTooltip.String = hoverText;
+                    app.hTooltip.Visible = 'on'; % Mostrar el tooltip
+                end
+            end
+        else
+            % Ocultar el tooltip si el ratón sale del área del gráfico
+            if isprop(app, 'hTooltip') && isvalid(app.hTooltip)
+                app.hTooltip.Visible = 'off';
+            end
+        end
+    end
+end
+
+\end{lstlisting}
+
+\tab La planificación fue básicamente la misma que se hizo desde la primera versión. La única diferencia es que se agrego la funcionalidad de la célula, lo cual implico agregar nuevas variables para almacenar la posición y el estado de infección de la célula, así como también agregar código para actualizar la posición de la célula en cada iteración de la simulación. Ademas, se agrego el tooltip para mostrar el valor del campo eléctrico en la posición del cursor, lo cual fue un añadido que no estaba contemplado en la planificación inicial pero que se consideró importante para mejorar la experiencia del usuario al interactuar con la simulación. A continuación, mostraremos el diagrama de flujo que se siguió para implementar la funcionalidad de la célula:
+
+\begin{center}
+\begin{tikzpicture}[node distance=2cm]
+
+\node (start) [initEnd] {Inicio};
+\node (input) [io, below of=start, text width=4.5cm, minimum width=4.5cm]
+    {Configurar parámetros (posición y estado de la célula)};
+\node (calcField) [process, below of=input, text width=5cm, minimum width=5cm]
+    {Obtener los datos del campo eléctrico de la lógica de la simulación};
+% Ajuste: rombo más rectangular, menos cuadrado
+\node (updateCell) [decision, below of=calcField, yshift=-0.5cm, minimum width=4.5cm, minimum height=1.3cm, text width=3.2cm, aspect=2.5]
+    {¿La célula está infectada?};
+
+\node (moveInfected) [process,
+    below of=updateCell, xshift=-4.5cm, yshift=-1.5cm, text width=3.5cm]
+    {Mover célula en dirección del campo (lado negativo)};
+\node (moveHealthy) [process,
+    below of=updateCell, xshift=4.5cm, yshift=-1.5cm, text width=3.5cm]
+    {Mover célula en dirección contraria al campo (lado positivo)};
+
+\node (updatePlot) [process, below of=updateCell, yshift=-4.5cm]
+    {Actualizar la posición de la célula en la gráfica};
+\node (end) [initEnd, below of=updatePlot] {Fin};
+
+\draw [arrow] (start) -- (input);
+\draw [arrow] (input) -- (calcField);
+\draw [arrow] (calcField) -- (updateCell);
+\draw [arrow] (updateCell.west) -| node[near start, above] {Sí} (moveInfected);
+\draw [arrow] (updateCell.east) -| node[near start, above] {No} (moveHealthy);
+\draw [arrow] (moveInfected) |- (updatePlot);
+\draw [arrow] (moveHealthy) |- (updatePlot);
+\draw [arrow] (updatePlot) -- (end);
+
+\end{tikzpicture}
+\end{center}
+
+\tab Cabe recalcar que la migración se hizo de la siguiente manera: primero se implemento la funcionalidad de la célula en el código de MATLAB vanilla, y una vez que esta funcionalidad estaba funcionando correctamente, lentamente se migró todo el código a App Designer; pasando el código del estilo de programación estructurada a la programación orientada a objetos. Para gráficar, tuvimos que acceder al objeto de Axes que App Designer crea para mostrar la gráfica, el cual se llama \texttt{UIAxes}. Para esto, se reemplazaron los comandos de graficación tradicionales por comandos que especifican que la gráfica se debe hacer en \texttt{app.UIAxes}, por ejemplo, en lugar de usar \texttt{plot(x,y)}, se usó \texttt{plot(app.UIAxes, x, y)}. De esta manera, toda la lógica de la simulación se mantuvo intacta, pero ahora con la capacidad de mostrar la gráfica dentro de la interfaz de App Designer.
+
+Con fines demostrativos, mostraremos algunas imagenes de la interfaz gráfica de la última versión del código, las cuales fueron tomadas directamente de la aplicación en ejecución:
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{\nat{parte3/positivo.png}}
+        \caption{Simulación de dioelectroforesis con carga positiva.}
+        \label{fig:positivo}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{\nat{parte3/negativo.png}}
+        \caption{Simulación de dioelectroforesis con carga negativa.}
+        \label{fig:negativo}
+    \end{minipage}
+\end{figure}
+
+\tab En dado caso de dudas, se recomienda acceder nuestro repositorio de GitHub para revisar el código completo. A su vez, se recomienda revisar el video de como funciona nuestra aplicación: \url{https://tecmx-my.sharepoint.com/:v:/g/personal/a01287454_tec_mx/IQChWuMLRHvPTaWHneVtR8jBAS_2hmx0HsBRpzLDq6DSE-s?e=21jbuu}
