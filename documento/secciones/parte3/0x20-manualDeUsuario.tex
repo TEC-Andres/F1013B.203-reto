@@ -1,0 +1,28 @@
+\inicializarSeccion{Manual de usuario}
+
+\tab La interfaz gráfica desarrollada en MATLAB AppDesign simula el campo eléctrico generado por dos líneas de cargas puntuales y el movimiento de un glóbulo rojo a través de dicho campo. La pantalla se divide en dos secciones: el panel izquierdo con los controles de entrada y el panel derecho con la visualización de la simulación.
+
+\inicializarSubseccion{Configuración de cargas}
+Esta sección controla las propiedades de los electrodos:
+\begin{itemize}
+    \item Cargas positivas: Campo numérico donde se ingresa el número de cargas puntuales que forman la línea positiva. A mayor número la línea positiva genera un campo más uniforme a lo largo del eje horizontal.
+    \item Cargas negativas: Campo numérico para el número de cargas de la línea negativa. Cuando este valor difiere del de cargas positivas se genera un campo eléctrico no uniforme. Esta es una condición necesaria para la dielectroforesis.
+    \item Distancia entre barras: Campo numérico que define la separación vertical entre las dos líneas de carga en metros. A mayor distancia el campo en la zona central entre las líneas se debilita.
+    \item Longitud de +q: Deslizador que ajusta la longitud de la línea de cargas positivas. Al modificar esta longitud se cambia la extensión espacial del campo positivo. 
+    \item Longitud de -q: Deslizador que ajusta la longitud de la línea de cargas negativas. Cuando esta longitud difiere de la positiva se resalta la asimetría del campo.
+\end{itemize}
+
+\inicializarSubseccion{Configuración de célula}
+\tab Esta sección define las propiedades del glóbulo rojo simulado:
+\begin{itemize}
+    \item Posición inicial en X: Campo numérico que establece la coordenada horizontal inicial del glóbulo rojo en metros. El valor 0 corresponde al centro de la pantalla.
+    \item Posición inicial en Y: Campo numérico para la coordenada vertical inicial del glóbulo rojo. Al igual que en X, el valor 0 es el centro de la pantalla.
+    \item X e Y: Campos numéricos donde se ingresa la posición inicial de la célula en el espacio simulado. El origen corresponde al centro de la pantalla.
+    \item Menu “¿Está infectada?”: Menú desplegable con opciones “Si” y “No”. Si se selecciona “Si”, la célula se representa con un marcador morado y se comporta como carga positiva y se mueve en la dirección del campo. Si se selecciona “No”, la célula aparece en verde y se mueve en dirección contraria al campo y así se simula el comportamiento de un glóbulo sano.
+\end{itemize}
+
+\inicializarSubseccion{Correr Simulación}
+\tab Una vez configurados todos los parámetros se presiona el botón “Correr Simulación”. La app calcula el campo eléctrico usando superposición de todas las cargas, lo grafica con flechas azules normalizadas que indican la dirección del campo, muestra las cargas positivas en rojo y las negativas en azul, y anima el movimiento del glóbulo a través del campo en tiempo real. Las barras actúan como barreras físicas: la célula no puede atravesarlas dentro de su longitud.
+
+\inicializarSubseccion{Video demonstrativo}
+\tab Finalmente se grabó un video mostrando el funcionamiento de la interfaz para dos casos distintos, el cual fue subido a la unidad compartida del curso en Google Drive. Pero que a su vez, se encuentra en este apartado: \url{https://tecmx-my.sharepoint.com/:v:/g/personal/a01287454_tec_mx/IQDq_EgfvHzrSJIT1RK5pDGzAaeIRzxtAkD4nAtdwDSKVhM?e=MVe4lm}
